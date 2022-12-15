@@ -5,11 +5,11 @@ const registrar = async (req, res) => {
     const { email } = req.body
 
     // Prevenir usuarios duplicados
-    const existeUsuario = await Veterinario.findOne({email})
+    const existeUsuario = await Veterinario.findOne({ email })
 
     if (existeUsuario) {
         const error = new Error("Usuario ya registrado")
-        return res.status(400).json({msg : error.message})
+        return res.status(400).json({ msg: error.message })
     }
 
     try {
@@ -21,9 +21,6 @@ const registrar = async (req, res) => {
         console.log(error)
     }
 
-    res.json({
-        msg: "Registrando usuario"
-    })
 }
 
 const perfil = (req, res) => {
@@ -32,9 +29,25 @@ const perfil = (req, res) => {
     })
 }
 
-const confirmar =  (req, res) => {
-    console.log(req.params.token)
-    res.json({ msg : "Confirmando cuenta" })
+const confirmar = async (req, res) => {
+    const token = req.params.token
+
+    const usuarioConfirmar = await Veterinario.findOne({ token })
+
+    if (!usuarioConfirmar) {
+        const error = new Error('Token no valido')
+        return res.status(404).json({ msg: error.message });
+    }
+
+    try {
+        usuarioConfirmar.token = null
+        usuarioConfirmar.confirmado = true
+        await usuarioConfirmar.save()
+        res.json({ msg: 'Usuario confirmado correctamente'})
+    } catch (error) {
+        console.log(error)  
+    }
+
 }
 
 

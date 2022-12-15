@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import generadId from "../helpers/generarId.js";
+import bcrypt from 'bcrypt'
 const veterinariosSchema = mongoose.Schema({
     nombre : {
         type : String,
@@ -33,6 +34,14 @@ const veterinariosSchema = mongoose.Schema({
         type : Boolean,
         default : false
     }
+})
+
+veterinariosSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+        next()
+    }
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt);
 })
 
 const Veterinario = mongoose.model("Veterinario", veterinariosSchema)
