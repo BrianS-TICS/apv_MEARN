@@ -32,7 +32,14 @@ const perfil = (req, res) => {
     })
 }
 
+const confirmar =  (req, res) => {
+    console.log(req.params.token)
+    res.json({ msg : "Confirmando cuenta" })
+}
+
+
 export {
     registrar,
-    perfil
+    perfil,
+    confirmar
 }
