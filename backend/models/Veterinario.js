@@ -44,5 +44,9 @@ veterinariosSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 })
 
+veterinariosSchema.methods.comprobarPassword = async function(passwordFormulario, passwordHash){
+    return await bcrypt.compare(passwordFormulario,this.password)
+}
+
 const Veterinario = mongoose.model("Veterinario", veterinariosSchema)
 export default Veterinario
