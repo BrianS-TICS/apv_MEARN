@@ -1,5 +1,7 @@
 import Veterinario from "../models/Veterinario.js"
 import { generarJWT } from "../helpers/generarJWT.js"
+import generadId from "../helpers/generarId.js"
+import { json } from "express"
 
 const registrar = async (req, res) => {
 
@@ -24,8 +26,66 @@ const registrar = async (req, res) => {
 
 }
 
+const olvidePassword =  async (req, res) => { 
+    const { email } = req.body
+    
+    const veterinario = await Veterinario.findOne({email : email})
+    
+    if (!veterinario) {
+        const error = new Error("El correo no esta registrado")
+        return res.status(400).json({msg : error.message })
+    }
+
+    try {
+        veterinario.token = generadId()
+        await veterinario.save()
+
+        return res.json({msg : "Se ha enviado un token a tu correo"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const comprobarToken = async (req, res) => {
+    const token = req.params.token
+    const tokenValido = await Veterinario.findOne({token})
+
+    if (tokenValido) {
+        res.status(200).json({ msg : "Token valido" })
+    }else{
+        const error = new Error("El token no es valido")
+        res.status(400).json({ msg : error.message})
+    }
+}
+
+const nuevoPassword = async (req, res) => {
+    const { token }  = req.params
+    const { password } = req.body
+
+    const veterinario = await Veterinario.findOne({token})
+    
+    if (!veterinario) {
+        const error = new Error("Token no valido");
+        res.status(400).json({ msg : error});
+    }
+    
+    try {
+        veterinario.token = null
+        veterinario.password = password
+        
+        await veterinario.save()
+        res.status(200).json({ msg : "Password modificado correctamente"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const perfil = (req, res) => {
-    res.status(200).json( { msg : "perfil"} );
+
+    const {veterinario } = req
+
+
+    res.json({perfil : veterinario})
 }
 
 const confirmar = async (req, res) => {
@@ -80,5 +140,8 @@ export {
     registrar,
     perfil,
     confirmar,
-    autenticar
+    autenticar,
+    olvidePassword,
+    comprobarToken,
+    nuevoPassword
 }
