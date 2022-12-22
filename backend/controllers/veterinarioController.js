@@ -1,11 +1,12 @@
 import Veterinario from "../models/Veterinario.js"
 import { generarJWT } from "../helpers/generarJWT.js"
+import emailRegistro from "../helpers/emailRegistro.js"
 import generadId from "../helpers/generarId.js"
 import { json } from "express"
 
 const registrar = async (req, res) => {
 
-    const { email } = req.body
+    const { email, nombre } = req.body
 
     // Prevenir usuarios duplicados
     const existeUsuario = await Veterinario.findOne({ email })
@@ -16,10 +17,20 @@ const registrar = async (req, res) => {
     }
 
     try {
-        //Guarda nuevo veterinario
+        // Guarda nuevo veterinario
         const veterinario = new Veterinario(req.body)
         const veterinarioGuardado = await veterinario.save()
+        
+        // Envio de email
+        emailRegistro({
+            email,
+            nombre,
+            token : veterinarioGuardado.token
+        })
+        
         res.json(veterinarioGuardado)
+
+
     } catch (error) {
         console.log(error)
     }
@@ -89,7 +100,7 @@ const perfil = (req, res) => {
 }
 
 const confirmar = async (req, res) => {
-    const token = req.params.token
+    const { token } = req.params;
 
     const usuarioConfirmar = await Veterinario.findOne({ token })
 
