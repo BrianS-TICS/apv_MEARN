@@ -1,7 +1,36 @@
-import React from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Alerta from '../components/Alerta'
+import clienteAxios from '../config/axios'
 
 const OlvidePassword = () => {
+
+  const [email, setEmail] = useState('')
+  const [alerta, setAlerta] = useState({})
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (email === '') {
+      setAlerta({ msg: "El campo de email no puede estar vacio", error: true })
+      return
+    }
+
+    try {
+      const { data } = await clienteAxios.post("/veterinarios/olvide-password", { email })
+
+      setAlerta({
+        msg: data.msg
+      })
+
+    } catch (error) {
+      console.log(error);
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true
+      })
+    }
+  }
+
   return (
     <>
       <div>
@@ -11,7 +40,8 @@ const OlvidePassword = () => {
         </h1>
       </div>
       <div className='mb-10 md:mt-0 shadow-lg py-10 px-5 rounded-md bg-white'>
-        <form action="">
+        {alerta.msg && <Alerta alerta={alerta} />}
+        <form action="" onSubmit={(e) => { handleSubmit(e) }}>
           <div className='my-5'>
             <label
               htmlFor="email"
@@ -20,6 +50,8 @@ const OlvidePassword = () => {
               Email
             </label>
             <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete='off'
               name='email'
               type="email"

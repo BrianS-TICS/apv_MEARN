@@ -2,7 +2,7 @@ import Veterinario from "../models/Veterinario.js"
 import { generarJWT } from "../helpers/generarJWT.js"
 import emailRegistro from "../helpers/emailRegistro.js"
 import generadId from "../helpers/generarId.js"
-import { json } from "express"
+import emailOlvidepassword from "../helpers/emailOlvidepassword.js"
 
 const registrar = async (req, res) => {
 
@@ -50,6 +50,13 @@ const olvidePassword =  async (req, res) => {
     try {
         veterinario.token = generadId()
         await veterinario.save()
+
+        emailOlvidepassword({
+            email,
+            nombre : veterinario.nombre,
+            token : veterinario.token
+        })
+
 
         return res.json({msg : "Se ha enviado un token a tu correo"})
     } catch (error) {
