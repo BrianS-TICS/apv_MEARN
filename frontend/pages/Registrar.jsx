@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import Alerta from '../components/Alerta'
 import '../styles/RegistrarPacientes.css'
 import axios from "axios"
+import clienteAxios from '../config/axios'
 
 const Registrar = () => {
 
@@ -43,9 +44,9 @@ const Registrar = () => {
                 confirmPassword
             }
 
-            const url = "http://localhost:4000/api/veterinarios";
-            await axios.post(url, veterinario)
-            setAlerta({msg : "!Creado correctamente!, Revisa tu email" , error : false })
+            const url = `/veterinarios`
+            await clienteAxios.post(url, veterinario)
+            setAlerta({msg : "¡ Creado correctamente !, Revisa tu email" , error : false })
 
         } catch (error) {
             setAlerta({ error : true , msg : error.response.data.msg })

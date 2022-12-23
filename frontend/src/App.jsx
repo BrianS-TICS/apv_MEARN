@@ -6,7 +6,7 @@ import OlvidePassword from "../pages/OlvidePassword"
 import Registrar from "../pages/Registrar"
 
 function App() {
-
+  
   return (
     <BrowserRouter>
     <Routes>
