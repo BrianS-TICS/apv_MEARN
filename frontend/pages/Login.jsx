@@ -45,7 +45,7 @@ const Login = () => {
 
             const { data } = await clienteAxios.post(url, request)
             localStorage.setItem('token', data.token)
-
+            setAuth(data)
             navegate('/admin')
 
         } catch (error) {
