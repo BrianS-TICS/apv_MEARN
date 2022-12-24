@@ -1,7 +1,61 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
+import Alerta from '../components/Alerta'
+import clienteAxios from '../config/axios'
 
 const Login = () => {
+
+    const { setAuth } = useAuth()
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [alerta, setAlerta] = useState({})
+    
+    const navegate = useNavigate()
+
+    const handleSubmit = async e => {
+        e.preventDefault()
+
+
+        if (email === "") {
+            setAlerta({
+                msg: "El email no puede estar vacio",
+                error: true
+            })
+            return
+        }
+
+        if (password === "") {
+            setAlerta({
+                msg: "La contraseña no puede estar vacia",
+                error: true
+            })
+            return
+        }
+
+        try {
+            const url = "veterinarios/login"
+
+            const request = {
+                email,
+                password
+            }
+
+            const { data } = await clienteAxios.post(url, request)
+            localStorage.setItem('token', data.token)
+
+            navegate('/admin')
+
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
+
+    }
+
     return (
         <>
             <div>
@@ -10,7 +64,8 @@ const Login = () => {
                 </h1>
             </div>
             <div className='mt-5 md:mt-0 shadow-lg py-10 px-5 rounded-md bg-white'>
-                <form action="">
+                {alerta.msg && <Alerta alerta={alerta} />}
+                <form action="" onSubmit={(e) => handleSubmit(e)}>
                     <div className='my-5'>
                         <label
                             htmlFor="email"
@@ -19,6 +74,8 @@ const Login = () => {
                             Email
                         </label>
                         <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             autoComplete='off'
                             name='email'
                             type="email"
@@ -34,6 +91,8 @@ const Login = () => {
                             Password
                         </label>
                         <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             autoComplete='off'
                             name='password'
                             type="password"
@@ -51,7 +110,7 @@ const Login = () => {
 
                 <nav className='mt-5'>
                     <Link className='text-gray-800 hover:text-gray-600 text-center md:text-left  block' to='/registrar'>
-                        ¿No tienes una cuenta? <span className='underline'> Regístrate aqui</span> 
+                        ¿No tienes una cuenta? <span className='underline'> Regístrate aqui</span>
                     </Link>
                     <Link className='text-gray-800 text-center md:text-left hover:text-gray-600 block mt-2 underline' to='/olvide-password'>
                         Olvidé mi password

@@ -5,9 +5,9 @@ const Alerta = ({ alerta }) => {
         <>
             <h4
                 className={
-                    alerta.error ?
-                        "from-red-400 to-red-600 text-white p-3 rounded-md font-bold text-center bg-gradient-to-r"
-                        : "from-green-500 to-green-600 text-white p-3 rounded-md font-bold text-center bg-gradient-to-r"}
+                    alerta.error ? 
+                        ( "from-red-400 to-red-600 text-white p-3 rounded-md font-bold text-center bg-gradient-to-r uppercase ")
+                        : ( "from-green-500 to-green-600 text-white p-3 rounded-md font-bold text-center bg-gradient-to-r uppercase")}
             >{alerta.msg}</h4>
         </>
     )
