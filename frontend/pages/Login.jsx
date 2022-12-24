@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import Alerta from '../components/Alerta'
 import clienteAxios from '../config/axios'
+import SpinnerFullScreen from '../components/SpinnerFullScreen'
 
 const Login = () => {
 
-    const { setAuth } = useAuth()
+    const { setAuth, auth, cargando } = useAuth()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [alerta, setAlerta] = useState({})
-    
+
     const navegate = useNavigate()
 
     const handleSubmit = async e => {
@@ -54,6 +55,14 @@ const Login = () => {
             })
         }
 
+    }
+
+    if (cargando) {
+        return <SpinnerFullScreen />
+    }
+    
+    if (auth?._id) {
+        return <Navigate to={'/admin'} />
     }
 
     return (
