@@ -11,7 +11,7 @@ const checkAuth = async (req, res, next) => {
             const decored = jwt.verify(token, process.env.JWT_SECRET)
 
             // Al agregarlo al request se express crea una sesion con sus datos
-            req.veterinario = await Veterinario.findById(decored.id).select("-password -token -confirmado -telefono")
+            req.veterinario = await Veterinario.findById(decored.id).select("-password -token -confirmado")
 
             return next()
         } catch (e) {
