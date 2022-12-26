@@ -8,7 +8,7 @@ const Header = () => {
     return (
         <header className='py-10 bg-indigo-600'>
             <div className='container mx-auto md:flex justify-between items-center'>
-                <h1 className='text-yellow-200 text-2xl text-center font-bold uppercase p-1 hover:cursor-default'>Administrador de pacientes{" "}
+                <h1 className='text-yellow-200 text-2xl text-center font-black uppercase p-1 hover:cursor-default'>Administrador de pacientes{" "}
                     <span className='text-white font-extrabold'>de veterinaria</span>
                 </h1>
                 <nav className='flex flex-col items-center md:flex-row gap-4  justify-center mt-5 md:mt-0 p-3 md:p-0'>
